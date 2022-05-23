@@ -26,8 +26,7 @@ fn main() {
 
     let filenames = glob(format!("{}/**/*.jp*g", args.path).as_str())
         .expect("Failed to read glob pattern")
-        .filter(|entry| entry.is_ok())
-        .map(|entry| entry.unwrap())
+        .filter_map(|entry| entry.ok())
         .collect();
 
     App::new()
