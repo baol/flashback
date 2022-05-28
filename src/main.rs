@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::input::mouse::MouseWheel;
 use clap::Parser;
 use std::iter::Iterator;
 use std::path::PathBuf;
@@ -34,7 +35,28 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_system(picture_grid)
+        .add_system(scroll_events)
         .run();
+}
+
+fn scroll_events(mut scroll_evr: EventReader<MouseWheel>) {
+    use bevy::input::mouse::MouseScrollUnit;
+    for ev in scroll_evr.iter() {
+        match ev.unit {
+            MouseScrollUnit::Line => {
+                println!(
+                    "Scroll (line units): vertical: {}, horizontal: {}",
+                    ev.y, ev.x
+                );
+            }
+            MouseScrollUnit::Pixel => {
+                println!(
+                    "Scroll (pixel units): vertical: {}, horizontal: {}",
+                    ev.y, ev.x
+                );
+            }
+        }
+    }
 }
 
 fn picture_grid(mut q: Query<(&mut Transform, &Photo)>) {
@@ -59,6 +81,9 @@ fn picture_grid(mut q: Query<(&mut Transform, &Photo)>) {
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, filenames: Res<Filenames>) {
     // FIXME: loading all images in advance: should track the visible
     // images and pre-load just the needed ones.
+
+    let placeholder: Handle<Image> = asset_server.load("textures/placeholder.png");
+
     let images = filenames
         .names
         .iter()
@@ -72,7 +97,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, filenames: Res<
                     custom_size: Some(Vec2::new(160.0, 100.0)),
                     ..default()
                 },
-                texture: image,
+                texture: placeholder.clone(),
                 ..default()
             })
             .insert(Photo);
