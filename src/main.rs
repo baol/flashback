@@ -100,6 +100,16 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, filenames: Res<
                 texture: placeholder.clone(),
                 ..default()
             })
+            .with_children(|parent| {
+                parent.spawn_bundle(SpriteBundle {
+                    sprite: Sprite {
+                        custom_size: Some(Vec2::new(160.0, 100.0)),
+                        ..default()
+                    },
+                    texture: image,
+                    ..default()
+                });
+            })
             .insert(Photo);
     })
 }
