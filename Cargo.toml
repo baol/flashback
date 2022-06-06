@@ -8,6 +8,7 @@ version = "0.1.0"
 clap = { version = "3.1.18", features = ["derive"] }
 bevy = { version = "0.7.0", features = ["jpeg"] }
 glob = "0.3.0"
+bevy_prototype_lyon = "0.5.0"
 
 [profile.release]
 debug = true
